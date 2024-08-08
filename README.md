@@ -5,7 +5,7 @@
 
 ## Descripción
 
-Esta es una aplicación ASP.NET MVC para la gestión de empleados. La aplicación permite agregar, editar y eliminar empleados, así como ver una lista de todos los empleados.
+Esta es una aplicación ASP.NET MVC utilizando el ORM Entity framework para la persistencia de datos en una base de datos SQL server y .net Framework 4.8 para la gestión de empleados. La aplicación permite agregar, editar y eliminar empleados, así como ver una lista de todos los empleados.
 
 ## Prerrequisitos
 
@@ -29,4 +29,9 @@ Antes de comenzar, asegúrate de tener instalados los siguientes componentes:
 ### 2. Ejecutar la aplicación
 
 1. Puedes presionar la tecla `F5` o `CTRL+F5`
+
+2. También lo puedes ejecutar dando click en este lugar:
+
+   ![image](https://github.com/user-attachments/assets/42c6d288-c488-40a2-86fd-aa93dd6665fe)
+
 
