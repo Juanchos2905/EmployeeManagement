@@ -24,8 +24,9 @@ Antes de comenzar, asegúrate de tener instalados los siguientes componentes:
 3. Ingresa la URL del repositorio de GitHub y selecciona la ubicación donde deseas clonar el proyecto.
 4. Haz clic en `Clone`.
 
-También puedes clonar el repositorio desde la línea de comandos:
+(También puedes clonar el repositorio desde la línea de comandos)
 
-```bash
-git clone https://github.com/Juanchos2905/EmployeeManagement.git
-cd repo
+### 2. Ejecutar la aplicación
+
+1. Puedes presionar la tecla `F5` o `CTRL+F5`
+
