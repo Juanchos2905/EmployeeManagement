@@ -48,8 +48,8 @@ namespace EmployeeManagement.Controllers
             }
         }
 
-        // POST: Employee/UpdateEmployee
-        [HttpPost]
+        // PUT: Employee/UpdateEmployee
+        [HttpPut]
         public JsonResult UpdateEmployee(Employee employee)
         {
             var existingEmployee = db.Employees.FirstOrDefault(e => e.Id == employee.Id);
@@ -68,7 +68,7 @@ namespace EmployeeManagement.Controllers
         }
 
         // POST: Employee/DeleteEmployee
-        [HttpPost]
+        [HttpDelete]
         public JsonResult DeleteEmployee(int id)
         {
             var employee = db.Employees.FirstOrDefault(e => e.Id == id);

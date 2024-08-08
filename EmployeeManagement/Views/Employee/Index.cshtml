@@ -31,7 +31,7 @@
                 <div class="error" id="SalaryError"></div>
 
                 <input type="submit" value="Agregar" class="btn btn-custom" id="submitButton">
-                <button type="button" id="cancelFormButton" class="btn btn-cancel">Cancel</button>
+                <button type="button" id="cancelFormButton" class="btn btn-cancel">Cancelar</button>
             </form>
         </div>
 
@@ -57,8 +57,8 @@
                         <td>@employee.Office</td>
                         <td>@employee.Salary</td>
                         <td>
-                            <button class="btn-edit btn">Edit</button>
-                            <button class="btn-delete btn">Delete</button>
+                            <button class="btn-edit btn">Editar</button>
+                            <button class="btn-delete btn">Eliminar</button>
                         </td>
                     </tr>
                 }
@@ -101,31 +101,31 @@
 
                 //Validaciones usando jQuery
                 if (!name) {
-                    $('#NameError').text('Name cannot be empty.');
+                    $('#NameError').text('Name no puede estar vacío.');
                     valid = false;
                 } else if (/\d/.test(name)) {
-                    $('#NameError').text('Name cannot contain numbers.');
+                    $('#NameError').text('Name no puede contener números.');
                     valid = false;
                 }
                 if (!position) {
-                    $('#PositionError').text('Position cannot be empty.');
+                    $('#PositionError').text('Position no puede estar vacío.');
                     valid = false;
                 } else if (/\d/.test(position)) {
-                    $('#PositionError').text('Position cannot contain numbers.');
+                    $('#PositionError').text('Position no puede contener números.');
                     valid = false;
                 }
                 if (!office) {
-                    $('#OfficeError').text('Office cannot be empty.');
+                    $('#OfficeError').text('Office no puede estar vacío.');
                     valid = false;
                 } else if (/\d/.test(office)) {
-                    $('#OfficeError').text('Office cannot contain numbers.');
+                    $('#OfficeError').text('Office no puede contener números.');
                     valid = false;
                 }
                 if (!salary) {
-                    $('#SalaryError').text('Salary cannot be empty.');
+                    $('#SalaryError').text('Salary no puede estar vacío.');
                     valid = false;
                 } else if (isNaN(salary) || parseFloat(salary) < 0) {
-                    $('#SalaryError').text('Salary must be a positive number.');
+                    $('#SalaryError').text('Salary debe tener números positivos.');
                     valid = false;
                 }
 
@@ -198,6 +198,7 @@
                         if (response.success) {
                             alert(response.message);
                             loadEmployees();
+                            $('#employeeFormContainer').hide();
                         } else {
                             alert(response.message);
                         }
