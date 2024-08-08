@@ -1,0 +1,238 @@
+﻿@model IEnumerable<EmployeeManagement.Models.Employee>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Management</title>
+    <link rel="stylesheet" type="text/css" href="~/Content/site.css">
+</head>
+<body>
+    <div class="container">
+        <button id="toggleFormButton" class="btn btn-custom">Agregar un nuevo empleado</button>
+
+        <div id="employeeFormContainer" style="display: none;">
+            <h3 id="formTitle">Agregar un nuevo empleado</h3>
+            <form id="employeeForm">
+                <input type="hidden" id="EmployeeId" name="Id">
+                <label for="Name">Name:</label>
+                <input type="text" id="Name" name="Name" class="form-control">
+                <div class="error" id="NameError"></div>
+
+                <label for="Position">Position:</label>
+                <input type="text" id="Position" name="Position" class="form-control">
+                <div class="error" id="PositionError"></div>
+
+                <label for="Office">Office:</label>
+                <input type="text" id="Office" name="Office" class="form-control">
+                <div class="error" id="OfficeError"></div>
+
+                <label for="Salary">Salary:</label>
+                <input type="number" id="Salary" name="Salary" step="0.01" class="form-control">
+                <div class="error" id="SalaryError"></div>
+
+                <input type="submit" value="Agregar" class="btn btn-custom" id="submitButton">
+                <button type="button" id="cancelFormButton" class="btn btn-cancel">Cancel</button>
+            </form>
+        </div>
+
+        <h3>Lista de empleados</h3>
+        <table id="employeeTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Office</th>
+                    <th>Salary</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var employee in Model)
+                {
+                    <tr data-id="@employee.Id">
+                        <td>@employee.Id</td>
+                        <td>@employee.Name</td>
+                        <td>@employee.Position</td>
+                        <td>@employee.Office</td>
+                        <td>@employee.Salary</td>
+                        <td>
+                            <button class="btn-edit btn">Edit</button>
+                            <button class="btn-delete btn">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @*jQuery & AJAX*@
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Toggle btn para ocultar el formulario*****
+            $('#toggleFormButton').click(function () {
+                $('#employeeFormContainer').toggle();
+                $('#employeeForm')[0].reset();
+                $('#EmployeeId').val('');
+                $('#submitButton').val('Agregar');
+                $('#formTitle').text('Agregar un nuevo empleado');
+                clearErrors();
+            });
+
+            $('#cancelFormButton').click(function () {
+                $('#employeeFormContainer').hide();
+                $('#employeeForm')[0].reset();
+                $('#EmployeeId').val('');
+                clearErrors();
+            });
+
+            // Agregar empleado
+            $('#employeeForm').submit(function (event) {
+                event.preventDefault();
+
+                clearErrors();
+             
+                let valid = true;
+                let name = $('#Name').val().trim();
+                let position = $('#Position').val().trim();
+                let office = $('#Office').val().trim();
+                let salary = $('#Salary').val();
+
+                //Validaciones usando jQuery
+                if (!name) {
+                    $('#NameError').text('Name cannot be empty.');
+                    valid = false;
+                } else if (/\d/.test(name)) {
+                    $('#NameError').text('Name cannot contain numbers.');
+                    valid = false;
+                }
+                if (!position) {
+                    $('#PositionError').text('Position cannot be empty.');
+                    valid = false;
+                } else if (/\d/.test(position)) {
+                    $('#PositionError').text('Position cannot contain numbers.');
+                    valid = false;
+                }
+                if (!office) {
+                    $('#OfficeError').text('Office cannot be empty.');
+                    valid = false;
+                } else if (/\d/.test(office)) {
+                    $('#OfficeError').text('Office cannot contain numbers.');
+                    valid = false;
+                }
+                if (!salary) {
+                    $('#SalaryError').text('Salary cannot be empty.');
+                    valid = false;
+                } else if (isNaN(salary) || parseFloat(salary) < 0) {
+                    $('#SalaryError').text('Salary must be a positive number.');
+                    valid = false;
+                }
+
+                if (valid) {
+                    let id = $('#EmployeeId').val();
+                    let url = id ? '/Employee/UpdateEmployee' : '/Employee/AddEmployee';
+                    let method = id ? 'POST' : 'POST';
+                    //Asegurando que la variable salario utilice formato dec
+                    salary = parseFloat(salary).toFixed(2);
+                    $('#Salary').val(salary);
+                    //Obliga ignorar el id
+                    let formData = $(this).serialize();
+                    if (!id) {
+                        formData = formData.replace(/Id=[^&]*/g, '');
+                    }
+                    //Utilizando el AJAX para el CRUD completo
+                    $.ajax({
+                        url: url,
+                        type: method,
+                        data: formData,
+                        success: function (response) {
+                            if (response.success) {
+                                alert(response.message);
+                                loadEmployees();
+                                $('#employeeFormContainer').hide();
+                            } else {
+                                alert(response.message);
+                                if (response.errors) {
+                                    console.log('Validation Errors:', response.errors);
+                                }
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            alert("An error occurred: " + xhr.responseText);
+                        }
+                    });
+                }
+            });
+
+            // Editar empleado
+            $('#employeeTable').on('click', '.btn-edit', function () {
+                let row = $(this).closest('tr');
+                let id = row.data('id');
+                let name = row.find('td:eq(1)').text();
+                let position = row.find('td:eq(2)').text();
+                let office = row.find('td:eq(3)').text();
+                let salary = row.find('td:eq(4)').text();
+
+                $('#EmployeeId').val(id);
+                $('#Name').val(name);
+                $('#Position').val(position);
+                $('#Office').val(office);
+                $('#Salary').val(salary);
+
+                $('#submitButton').val('Actualizar');
+                $('#formTitle').text('Actualizar empleado');
+                $('#employeeFormContainer').show();
+            });
+
+            // Eliminar empleado
+            $('#employeeTable').on('click', '.btn-delete', function () {
+                let row = $(this).closest('tr');
+                let id = row.data('id');
+
+                $.ajax({
+                    url: '/Employee/DeleteEmployee',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            loadEmployees();
+                        } else {
+                            alert(response.message);
+                        }
+                    }
+                });
+            });
+            //Actualizar tabla del empleado eliminado.
+            function loadEmployees() {
+                $.ajax({
+                    url: '/Employee/GetEmployees',
+                    type: 'GET',
+                    success: function (data) {
+                        let rows = '';
+                        $.each(data, function (index, employee) {
+                            rows += `<tr data-id="${employee.Id}">
+                                        <td>${employee.Id}</td>
+                                        <td>${employee.Name}</td>
+                                        <td>${employee.Position}</td>
+                                        <td>${employee.Office}</td>
+                                        <td>${employee.Salary}</td>
+                                        <td>
+                                            <button class="btn-edit btn">Edit</button>
+                                            <button class="btn-delete btn">Delete</button>
+                                        </td>
+                                    </tr>`;
+                        });
+                        $('#employeeTable tbody').html(rows);
+                    }
+                });
+            }
+
+            function clearErrors() {
+                $('.error').text('');
+            }
+        });
+    </script>
+</body>
+</html>

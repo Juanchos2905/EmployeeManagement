@@ -10,6 +10,12 @@ namespace EmployeeManagement
 {
     public class MvcApplication : System.Web.HttpApplication
     {
+        protected void Application_BeginRequest(Object sender, EventArgs e)
+        {
+            System.Globalization.CultureInfo cultureInfo = new System.Globalization.CultureInfo("en-US");
+            System.Threading.Thread.CurrentThread.CurrentCulture = cultureInfo;
+            System.Threading.Thread.CurrentThread.CurrentUICulture = cultureInfo;
+        }
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
